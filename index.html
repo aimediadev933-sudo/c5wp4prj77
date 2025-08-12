@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEA-HAZEMON@TEIN-II - Real-Time Edge Computing for Environmental Monitoring</title>
+    <style>
+        :root {
+            --primary: #9A2AA0;
+            --secondary: #DA3FA3;
+            --body: #FCF5EC;
+            --text: #1D1D1B;
+            --secondary-dark: #4E245C;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--body);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary-dark));
+            color: white;
+            padding: 3rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            right: -20%;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(218, 63, 163, 0.2) 0%, transparent 70%);
+            animation: breathe 15s ease-in-out infinite;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -40%;
+            left: -15%;
+            width: 600px;
+            height: 600px;
+            background: conic-gradient(from 45deg, rgba(255, 255, 255, 0.1), transparent, rgba(255, 255, 255, 0.08));
+            animation: rotate 35s linear infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.2; }
+            50% { transform: scale(1.4) rotate(180deg); opacity: 0.3; }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 45px;
+            margin-bottom: 3.5rem;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            height: 80px;
+            width: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 18px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(218, 63, 163, 0.15), transparent);
+            border-radius: 18px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .logo:hover {
+            transform: translateY(-15px) scale(1.12) rotateY(8deg);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+        }
+
+        .logo:hover::before {
+            opacity: 1;
+        }
+
+        .hero-text {
+            text-align: center;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .hero-text h1 {
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            margin-bottom: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -3px;
+            background: linear-gradient(45deg, #fff, #DA3FA3, #fff, #9A2AA0);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textFlow 6s ease-in-out infinite;
+        }
+
+        @keyframes textFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero-text .subtitle {
+            font-size: clamp(1.3rem, 4vw, 2rem);
+            opacity: 0.95;
+            margin-bottom: 2.5rem;
+            font-weight: 300;
+        }
+
+        .hero-text .tech-features {
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+
+        .tech-feature {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 1.2rem 2.5rem;
+            border-radius: 35px;
+            font-weight: 800;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tech-feature::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .tech-feature:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-8px) scale(1.08);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .tech-feature:hover::before {
+            left: 100%;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--secondary-dark);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 30px rgba(78, 36, 92, 0.5);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-item {
+            color: white;
+            text-decoration: none;
+            padding: 1.8rem 3.5rem;
+            transition: all 0.5s ease;
+            font-weight: 800;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            transition: all 0.5s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(218, 63, 163, 0.25), rgba(154, 42, 160, 0.25));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .nav-item:hover {
+            color: var(--secondary);
+            transform: translateY(-3px);
+        }
+
+        .nav-item:hover::before {
+            width: 95%;
+        }
+
+        .nav-item:hover::after {
+            opacity: 1;
+        }
+
+        /* Main Content */
+        main {
+            padding: 6rem 0;
+        }
+
+        .section {
+            margin-bottom: 8rem;
+            background: white;
+            border-radius: 35px;
+            padding: 5rem;
+            box-shadow: 0 25px 80px rgba(154, 42, 160, 0.15);
+            position: relative;
+            overflow: hidden;
+            transform: translateY(50px);
+            opacity: 0;
+            animation: slideInUp 1.5s ease forwards;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--primary));
+            background-size: 400% 100%;
+            animation: gradientSlide 5s ease-in-out infinite;
+        }
+
+        @keyframes gradientSlide {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes slideInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section:nth-child(even) {
+            animation-delay: 0.5s;
+        }
+
+        .section:nth-child(odd) {
+            animation-delay: 0.25s;
+        }
+
+        .section h2 {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 4rem;
+            position: relative;
+            font-weight: 900;
+        }
+
+        .section h3 {
+            font-size: 2.3rem;
+            color: var(--secondary-dark);
+            margin: 4rem 0 2.5rem 0;
+            font-weight: 800;
+        }
+
+        /* Environmental Focus */
+        .environmental-showcase {
+            background: linear-gradient(135deg, rgba(154, 42, 160, 0.1), rgba(218, 63, 163, 0.1));
+            padding: 5rem;
+            border-radius: 30px;
+            margin: 5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .environmental-showcase::before {
+            content: '';
+            position: absolute;
+            top: -60%;
+            left: -60%;
+            width: 220%;
+            height: 220%;
+            background: radial-gradient(circle, rgba(218, 63, 163, 0.08) 0%, transparent 70%);
+            animation: rotate 45s linear infinite;
+        }
+
+        .monitoring-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 4rem;
+            margin: 4rem 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .monitoring-card {
+            background: white;
+            padding: 4rem;
+            border-radius: 25px;
+            text-align: center;
+            transition: all 0.6s ease;
+            border: 4px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .monitoring-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(218, 63, 163, 0.2), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .monitoring-card:hover {
+            transform: translateY(-20px) scale(1.03);
+            border-color: var(--secondary);
+            box-shadow: 0 35px 70px rgba(154, 42, 160, 0.3);
+        }
+
+        .monitoring-card:hover::before {
+            left: 100%;
+        }
+
+        .monitoring-icon {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        .monitoring-title {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .monitoring-desc {
+            font-size: 1.2rem;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        /* Countries Network */
+        .countries-network {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 3rem;
+            margin: 5rem 0;
+        }
+
+        .country-node {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 3.5rem;
+            border-radius: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.6s ease;
+        }
+
+        .country-node::before {
+            content: '';
+            position: absolute;
+            top: -70%;
+            right: -70%;
+            width: 140%;
+            height: 140%;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 50%;
+            transition: all 0.6s ease;
+        }
+
+        .country-node:hover {
+            transform: translateY(-25px) scale(1.08);
+            box-shadow: 0 40px 80px rgba(154, 42, 160, 0.5);
+        }
+
+        .country-node:hover::before {
+            transform: scale(1.8) rotate(45deg);
+        }
+
+        .country-flag {
+            font-size: 4.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .country-name {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .country-org {
+            position: relative;
+            z-index: 2;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Training Workshop */
+        .workshop-details {
+            background: var(--body);
+            padding: 4rem;
+            border-radius: 25px;
+            margin: 4rem 0;
+            border-left: 10px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .workshop-details::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(154, 42, 160, 0.1), rgba(218, 63, 163, 0.1));
+            transition: width 0.6s ease;
+        }
+
+        .workshop-details:hover {
+            transform: translateX(20px);
+            box-shadow: 0 25px 50px rgba(154, 42, 160, 0.2);
+            border-left-color: var(--secondary);
+        }
+
+        .workshop-details:hover::before {
+            width: 100%;
+        }
+
+        .workshop-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            margin: 4rem 0;
+        }
+
+        .workshop-stat {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(154, 42, 160, 0.1);
+            transition: all 0.5s ease;
+        }
+
+        .workshop-stat:hover {
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 30px 60px rgba(154, 42, 160, 0.2);
+        }
+
+        .stat-number {
+            font-size: 4.5rem;
+            font-weight: 900;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .stat-label {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--secondary-dark);
+        }
+
+        /* Technical Focus */
+        .tech-focus {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 4rem;
+            margin: 5rem 0;
+        }
+
+        .tech-card {
+            background: var(--body);
+            padding: 4rem;
+            border-radius: 25px;
+            border-left: 10px solid var(--primary);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tech-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(154, 42, 160, 0.1), rgba(218, 63, 163, 0.1));
+            transition: width 0.6s ease;
+        }
+
+        .tech-card:hover {
+            transform: translateX(20px);
+            box-shadow: 0 25px 50px rgba(154, 42, 160, 0.2);
+            border-left-color: var(--secondary);
+        }
+
+        .tech-card:hover::before {
+            width: 100%;
+        }
+
+        .tech-card h4 {
+            color: var(--primary);
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+            font-weight: 900;
+            position: relative;
+            z-index: 2;
+        }
+
+        .tech-card p {
+            position: relative;
+            z-index: 2;
+            line-height: 1.8;
+            font-size: 1.2rem;
+        }
+
+        /* Outcomes & Impact */
+        .outcomes-impact {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin: 5rem 0;
+        }
+
+        .impact-item {
+            background: linear-gradient(135deg, var(--secondary-dark), var(--primary));
+            color: white;
+            padding: 4rem;
+            border-radius: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.6s ease;
+        }
+
+        .impact-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 1s ease;
+        }
+
+        .impact-item:hover::before {
+            transform: translateX(100%);
+        }
+
+        .impact-item:hover {
+            transform: scale(1.1);
+        }
+
+        .impact-icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        .impact-title {
+            font-size: 1.6rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+        }
+
+        .impact-desc {
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        /* SDG Section */
+        .sdg-environmental {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin: 5rem 0;
+        }
+
+        .sdg-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 4rem;
+            border-radius: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.6s ease;
+        }
+
+        .sdg-card::before {
+            content: '';
+            position: absolute;
+            top: -150%;
+            left: 0;
+            width: 100%;
+            height: 150%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: top 0.6s ease;
+        }
+
+        .sdg-card:hover {
+            transform: translateY(-15px) scale(1.05);
+        }
+
+        .sdg-card:hover::before {
+            top: 0;
+        }
+
+        .sdg-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            display: block;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .sdg-title {
+            position: relative;
+            z-index: 2;
+            font-weight: 800;
+            font-size: 1.5rem;
+        }
+
+        /* Future Vision */
+        .future-environmental {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 6rem;
+            border-radius: 35px;
+            text-align: center;
+            margin: 6rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .future-environmental::before {
+            content: '';
+            position: absolute;
+            top: -80%;
+            left: -80%;
+            width: 260%;
+            height: 260%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            animation: rotate 50s linear infinite;
+        }
+
+        .future-environmental h3 {
+            color: white;
+            font-size: 3.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .future-environmental p {
+            font-size: 1.6rem;
+            line-height: 1.9;
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--secondary-dark);
+            color: white;
+            text-align: center;
+            padding: 6rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 50%, rgba(218, 63, 163, 0.2) 90%);
+        }
+
+        .footer-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .logo-section {
+                gap: 30px;
+            }
+
+            .logo {
+                height: 70px;
+            }
+
+            .section {
+                padding: 3.5rem;
+            }
+
+            .hero-text .tech-features {
+                gap: 2rem;
+            }
+
+            .tech-feature {
+                padding: 1rem 2rem;
+                font-size: 0.9rem;
+            }
+
+            .nav-item {
+                padding: 1.5rem 2.5rem;
+                font-size: 0.9rem;
+            }
+
+            .monitoring-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .countries-network {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+
+            .tech-focus {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .hero-text h1 {
+                font-size: 2.8rem;
+            }
+
+            .hero-text .subtitle {
+                font-size: 1.3rem;
+            }
+
+            .section h2 {
+                font-size: 2.8rem;
+            }
+
+            .environmental-showcase {
+                padding: 3rem;
+            }
+
+            .future-environmental {
+                padding: 4rem;
+            }
+
+            .future-environmental h3 {
+                font-size: 2.5rem;
+            }
+
+            .future-environmental p {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="images/logos/tein-logo.png" alt="TEIN CC" class="logo">
+                    <img src="images/logos/asia-connect-logo.png" alt="Asi@Connect" class="logo">
+                    <img src="images/logos/eu-logo.png" alt="European Union" class="logo">
+                </div>
+                <div class="hero-text">
+                    <h1>SEA-HAZEMON@TEIN-II</h1>
+                    <p class="subtitle">Real-Time Edge Computing Network for Haze Monitoring and Forest Fire Detection</p>
+                    <div class="tech-features">
+                        <span class="tech-feature">Edge Computing</span>
+                        <span class="tech-feature">Environmental Monitoring</span>
+                        <span class="tech-feature">Real-Time Detection</span>
+                        <span class="tech-feature">Regional Network</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <div class="nav-container">
+                <a href="#overview" class="nav-item">Overview</a>
+                <a href="#monitoring" class="nav-item">Monitoring</a>
+                <a href="#training" class="nav-item">Training</a>
+                <a href="#outcomes" class="nav-item">Outcomes</a>
+                <a href="#impact" class="nav-item">Impact</a>
+                <a href="#future" class="nav-item">Future</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <section id="overview" class="section">
+                <h2>Project Overview</h2>
+                <p>The SEA-HAZEMON@TEIN-II project represents a pioneering initiative designed to build and enhance the technical capabilities of engineers from National Research and Education Networks (NRENs) across South and Southeast Asia. This comprehensive program focuses on advanced environmental monitoring technologies, providing critical tools for haze monitoring and forest fire detection through real-time edge computing networks.</p>
+
+                <div class="environmental-showcase">
+                    <h3>Environmental Monitoring Focus</h3>
+                    <div class="monitoring-grid">
+                        <div class="monitoring-card">
+                            <div class="monitoring-icon">🌫️</div>
+                            <div class="monitoring-title">Haze Monitoring</div>
+                            <div class="monitoring-desc">Advanced real-time monitoring systems for tracking atmospheric haze conditions, air quality metrics, and pollution patterns across the Southeast Asian region.</div>
+                        </div>
+                        <div class="monitoring-card">
+                            <div class="monitoring-icon">🔥</div>
+                            <div class="monitoring-title">Forest Fire Detection</div>
+                            <div class="monitoring-desc">Cutting-edge detection systems using edge computing and sensor networks to identify and track forest fires in real-time, enabling rapid response and mitigation.</div>
+                        </div>
+                        <div class="monitoring-card">
+                            <div class="monitoring-icon">📡</div>
+                            <div class="monitoring-title">Edge Computing Network</div>
+                            <div class="monitoring-desc">Distributed edge computing infrastructure providing low-latency processing capabilities for immediate environmental data analysis and alert generation.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Regional Collaboration Network</h3>
+                <div class="countries-network">
+                    <div class="country-node">
+                        <div class="country-flag">🇮🇳</div>
+                        <div class="country-name">India</div>
+                        <div class="country-org">NKN - Host Country</div>
+                    </div>
+                    <div class="country-node">
+                        <div class="country-flag">🇦🇫</div>
+                        <div class="country-name">Afghanistan</div>
+                        <div class="country-org">AfgREN</div>
+                    </div>
+                    <div class="country-node">
+                        <div class="country-flag">🇵🇰</div>
+                        <div class="country-name">Pakistan</div>
+                        <div class="country-org">PERN</div>
+                    </div>
+                    <div class="country-node">
+                        <div class="country-flag">🇳🇵</div>
+                        <div class="country-name">Nepal</div>
+                        <div class="country-org">NREN Nepal</div>
+                    </div>
+                    <div class="country-node">
+                        <div class="country-flag">🇧🇹</div>
+                        <div class="country-name">Bhutan</div>
+                        <div class="country-org">DrukREN</div>
+                    </div>
+                    <div class="country-node">
+                        <div class="country-flag">🇧🇩</div>
+                        <div class="country-name">Bangladesh</div>
+                        <div class="country-org">BdREN</div>
+                    </div>
+                    <div class="country-node">
+                        <div class="country-flag">🇱🇰</div>
+                        <div class="country-name">Sri Lanka</div>
+                        <div class="country-org">LEARN</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="monitoring" class="section">
+                <h2>Advanced Monitoring Technologies</h2>
+                <p>The project leverages cutting-edge technologies to create a comprehensive environmental monitoring ecosystem that enables real-time detection, analysis, and response to environmental hazards across the Southeast Asian region.</p>
+
+                <div class="tech-focus">
+                    <div class="tech-card">
+                        <h4>perfSONAR Technology</h4>
+                        <p>Advanced network performance monitoring and diagnostic toolkit that enables comprehensive analysis of network bottlenecks and ensures high-speed, reliable data exchange for environmental monitoring applications across the regional network infrastructure.</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>FIONette-based DTNs</h4>
+                        <p>High-performance Data Transfer Nodes optimized for environmental data transmission, providing critical infrastructure for rapid sharing of monitoring data, satellite imagery, and real-time sensor information across participating countries.</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>Real-Time Analytics</h4>
+                        <p>Edge computing systems processing environmental data in real-time, enabling immediate detection of hazardous conditions, automated alert generation, and rapid response coordination for forest fires and atmospheric hazards.</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>Network Optimization</h4>
+                        <p>Comprehensive data transfer optimization techniques ensuring reliable, high-speed communication of critical environmental data between monitoring stations, research institutions, and emergency response centers across the region.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="training" class="section">
+                <h2>Comprehensive Training Program</h2>
+                <p>The project delivered intensive, hands-on training in New Delhi, bringing together network engineers from across South and Southeast Asia to build critical capabilities in environmental monitoring and network performance optimization.</p>
+
+                <div class="workshop-details">
+                    <h3>3-Day Intensive Workshop in New Delhi</h3>
+                    <p>A focused, hands-on learning environment where participants gained practical experience with advanced environmental monitoring technologies, network diagnostic tools, and data transfer optimization techniques. The workshop emphasized practical implementation and real-world problem-solving skills essential for managing high-performance environmental monitoring networks.</p>
+                </div>
+
+                <div class="workshop-stats">
+                    <div class="workshop-stat">
+                        <span class="stat-number">22</span>
+                        <span class="stat-label">Engineers Trained</span>
+                    </div>
+                    <div class="workshop-stat">
+                        <span class="stat-number">7</span>
+                        <span class="stat-label">Countries Represented</span>
+                    </div>
+                    <div class="workshop-stat">
+                        <span class="stat-number">3</span>
+                        <span class="stat-label">Training Days</span>
+                    </div>
+                    <div class="workshop-stat">
+                        <span class="stat-number">100%</span>
+                        <span class="stat-label">Equipment Deployment</span>
+                    </div>
+                </div>
+
+                <h3>Training Components</h3>
+                <div class="tech-focus">
+                    <div class="tech-card">
+                        <h4>perfSONAR Implementation</h4>
+                        <p>Hands-on training in deploying, configuring, and maintaining perfSONAR nodes for network performance monitoring, with specific focus on environmental data transmission requirements and optimization techniques.</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>DTN Node Management</h4>
+                        <p>Comprehensive instruction in Data Transfer Node deployment and management, covering installation, configuration, troubleshooting, and optimization for high-volume environmental data exchange.</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>Network Diagnostics</h4>
+                        <p>Advanced techniques for diagnosing network bottlenecks, identifying performance issues, and implementing solutions to ensure reliable environmental monitoring data transmission across regional networks.</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>Equipment Distribution</h4>
+                        <p>Post-training equipment distribution for node deployment in participant countries, including ongoing technical support and guidance for successful implementation of monitoring infrastructure.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="outcomes" class="section">
+                <h2>Key Outcomes & Achievements</h2>
+
+                <div class="outcomes-impact">
+                    <div class="impact-item">
+                        <div class="impact-icon">👨‍💻</div>
+                        <div class="impact-title">22 Engineers Trained</div>
+                        <div class="impact-desc">Comprehensive training delivered to network engineers from 7 countries, building critical capabilities in environmental monitoring technologies and network optimization.</div>
+                    </div>
+                    <div class="impact-item">
+                        <div class="impact-icon">📡</div>
+                        <div class="impact-title">perfSONAR Network Deployed</div>
+                        <div class="impact-desc">Successfully deployed perfSONAR monitoring nodes across participating countries, creating a regional network performance monitoring infrastructure.</div>
+                    </div>
+                    <div class="impact-item">
+                        <div class="impact-icon">🤝</div>
+                        <div class="impact-title">Regional Collaboration Enhanced</div>
+                        <div class="impact-desc">Strengthened collaboration between NRENs and improved visibility into network performance across the South and Southeast Asian region.</div>
+                    </div>
+                    <div class="impact-item">
+                        <div class="impact-icon">🎯</div>
+                        <div class="impact-title">Knowledge Transfer Success</div>
+                        <div class="impact-desc">Participants reported strong intentions to replicate training within their home institutions, multiplying the project's impact across the region.</div>
+                    </div>
+                </div>
+
+                <h3>Technical Achievements</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin: 2.5rem 0; padding: 3rem; background: linear-gradient(135deg, rgba(154, 42, 160, 0.1), rgba(218, 63, 163, 0.1)); border-radius: 20px; border-left: 8px solid var(--primary);">
+                        <strong>Operational Monitoring Network:</strong> Successfully established a functional network of perfSONAR nodes across participating countries, enabling continuous monitoring of network performance for environmental data transmission.
+                    </li>
+                    <li style="margin: 2.5rem 0; padding: 3rem; background: linear-gradient(135deg, rgba(154, 42, 160, 0.1), rgba(218, 63, 163, 0.1)); border-radius: 20px; border-left: 8px solid var(--secondary);">
+                        <strong>Data Transfer Optimization:</strong> Implemented high-performance Data Transfer Nodes enabling rapid, reliable exchange of environmental monitoring data across national boundaries.
+                    </li>
+                    <li style="margin: 2.5rem 0; padding: 3rem; background: linear-gradient(135deg, rgba(154, 42, 160, 0.1), rgba(218, 63, 163, 0.1)); border-radius: 20px; border-left: 8px solid var(--primary);">
+                        <strong>Capacity Building Success:</strong> Trained technical teams across 7 countries in advanced network diagnostic and optimization techniques, building sustainable regional expertise.
+                    </li>
+                    <li style="margin: 2.5rem 0; padding: 3rem; background: linear-gradient(135deg, rgba(154, 42, 160, 0.1), rgba(218, 63, 163, 0.1)); border-radius: 20px; border-left: 8px solid var(--secondary);">
+                        <strong>Scalable Model Development:</strong> Created a replicable framework for ICT advancement in developing regions, particularly effective in geographically challenging environments.
+                    </li>
+                </ul>
+
+                <h3>Regional Impact</h3>
+                <div class="workshop-details">
+                    <h4>Cross-Border Collaboration</h4>
+                    <p>The project facilitated unprecedented technical knowledge-sharing between network engineers from multiple countries, fostering regional collaboration and creating a stronger, more interconnected community of practitioners. This collaborative foundation enables better support for cross-border scientific initiatives and more effective management of high-performance networks serving research and education institutions across South and Southeast Asia.</p>
+                </div>
+            </section>
+
+            <section id="impact" class="section">
+                <h2>Challenges & Strategic Solutions</h2>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 4rem; margin: 4rem 0;">
+                    <div style="background: linear-gradient(135deg, rgba(218, 63, 163, 0.12), rgba(154, 42, 160, 0.08)); padding: 3.5rem; border-radius: 25px; border-left: 8px solid var(--secondary);">
+                        <h3 style="color: var(--secondary-dark); margin-bottom: 2.5rem;">Implementation Challenges</h3>
+                        <div style="space-y: 2rem;">
+                            <div style="margin: 2rem 0; padding: 2.5rem; background: rgba(255, 255, 255, 0.8); border-radius: 15px;">
+                                <strong>Import/Export Delays:</strong> Complex international shipping procedures and customs regulations affected equipment availability and deployment timelines across participating countries.
+                            </div>
+                            <div style="margin: 2rem 0; padding: 2.5rem; background: rgba(255, 255, 255, 0.8); border-radius: 15px;">
+                                <strong>Variable Team Sizes:</strong> Smaller-than-expected technical team sizes in some NRENs required adaptive training approaches and additional support mechanisms.
+                            </div>
+                            <div style="margin: 2rem 0; padding: 2.5rem; background: rgba(255, 255, 255, 0.8); border-radius: 15px;">
+                                <strong>Customs Clearance:</strong> Limited time for customs clearance processes in certain countries, particularly Laos, created logistical challenges for equipment deployment.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, rgba(154, 42, 160, 0.12), rgba(78, 36, 92, 0.08)); padding: 3.5rem; border-radius: 25px; border-left: 8px solid var(--primary);">
+                        <h3 style="color: var(--primary); margin-bottom: 2.5rem;">Strategic Adaptations</h3>
+                        <div style="space-y: 2rem;">
+                            <div style="margin: 2rem 0; padding: 2.5rem; background: rgba(255, 255, 255, 0.8); border-radius: 15px;">
+                                <strong>Enhanced Coordination:</strong> Implemented robust international coordination mechanisms to streamline equipment procurement and shipping processes across diverse regulatory environments.
+                            </div>
+                            <div style="margin: 2rem 0; padding: 2.5rem; background: rgba(255, 255, 255, 0.8); border-radius: 15px;">
+                                <strong>Flexible Training Models:</strong> Adapted training approaches to accommodate varying team sizes and technical backgrounds, ensuring effective knowledge transfer regardless of local constraints.
+                            </div>
+                            <div style="margin: 2rem 0; padding: 2.5rem; background: rgba(255, 255, 255, 0.8); border-radius: 15px;">
+                                <strong>Ongoing Support Systems:</strong> Established follow-up video call support and remote assistance mechanisms to ensure successful post-training implementation and troubleshooting.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Contributing to Sustainable Development Goals</h3>
+                <div class="sdg-environmental">
+                    <div class="sdg-card">
+                        <span class="sdg-number">SDG 9</span>
+                        <span class="sdg-title">Industry, Innovation and Infrastructure</span>
+                    </div>
+                    <div class="sdg-card">
+                        <span class="sdg-number">SDG 17</span>
+                        <span class="sdg-title">Partnerships for the Goals</span>
+                    </div>
+                </div>
+
+                <h3>Socio-Economic Integration</h3>
+                <div class="workshop-details">
+                    <h4>Community-Led Development</h4>
+                    <p>The project integrates digital infrastructure development into broader socio-economic development agendas through community-led deployment strategies. This approach ensures that environmental monitoring capabilities are sustainable, locally managed, and responsive to regional needs, particularly in geographically challenging environments where traditional monitoring approaches may be insufficient.</p>
+                </div>
+            </section>
+
+            <section id="future" class="section">
+                <h2>Future Directions & Expansion</h2>
+
+                <h3>Sustainable Support Framework</h3>
+                <p>The project has established ongoing support mechanisms including follow-up video calls for technical assistance, expansion of perfSONAR nodes to additional institutions, and continued collaboration through APAN meetings to ensure long-term sustainability and growth of the environmental monitoring network.</p>
+
+                <h3>Scalable Development Model</h3>
+                <p>This initiative represents a scalable model for ICT advancement in developing regions, demonstrating particular effectiveness in geographically challenging environments. The community-led deployment strategies and integration with socio-economic development agendas provide a framework for replication in other regions facing similar environmental monitoring challenges.</p>
+
+                <div class="future-environmental">
+                    <h3>Vision for Environmental Network Intelligence</h3>
+                    <p>The SEA-HAZEMON@TEIN-II project is pioneering a new paradigm for regional environmental monitoring, where advanced edge computing networks enable real-time detection and response to environmental hazards. This foundation will transform how Southeast Asian countries collaborate on environmental protection, enable rapid response to natural disasters, and support evidence-based policy making for climate adaptation and environmental sustainability across the region.</p>
+                </div>
+
+                <h3>Expansion Initiatives</h3>
+                <div class="tech-focus">
+                    <div class="tech-card">
+                        <h4>Permanent Learning Modules</h4>
+                        <p>Development of comprehensive, permanent training modules and curriculum for ongoing capacity building in environmental monitoring technologies and network optimization techniques.</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>Open-Access Repositories</h4>
+                        <p>Creation of open-access technical repositories containing documentation, best practices, and implementation guides for environmental monitoring network deployment and management.</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>Remote Support Channels</h4>
+                        <p>Establishment of dedicated remote support channels and help desk services to provide ongoing technical assistance and troubleshooting for network operators across the region.</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>SDG Integration Framework</h4>
+                        <p>Strategic alignment with SDG implementation frameworks to ensure environmental monitoring capabilities contribute directly to national and regional sustainable development objectives.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <h3>SEA-HAZEMON@TEIN-II</h3>
+                <p>Advancing environmental protection through cutting-edge edge computing networks and regional collaboration across South and Southeast Asia.</p>
+                <p style="margin-top: 3rem; opacity: 0.9; font-size: 1.3rem;">
+                    Multi-country initiative spanning India, Afghanistan, Pakistan, Nepal, Bhutan, Bangladesh, and Sri Lanka<br>
+                    Building resilient environmental monitoring capabilities for a sustainable future
+                </p>
+                <p style="margin-top: 2rem; font-size: 1rem; opacity: 0.8;">
+                    WP4 Project - 2nd Call | Edge Computing • Environmental Monitoring • Network Optimization • Regional Collaboration
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -150px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections for animations
+        document.querySelectorAll('.section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Enhanced interactive effects for monitoring cards
+        document.querySelectorAll('.monitoring-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-20px) scale(1.03)';
+                this.style.borderColor = 'var(--secondary)';
+                this.style.boxShadow = '0 35px 70px rgba(154, 42, 160, 0.3)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+                this.style.borderColor = 'transparent';
+                this.style.boxShadow = 'none';
+            });
+        });
+
+        // Country node interactions
+        document.querySelectorAll('.country-node').forEach(node => {
+            node.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-25px) scale(1.08)';
+                this.style.boxShadow = '0 40px 80px rgba(154, 42, 160, 0.5)';
+            });
+            
+            node.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+                this.style.boxShadow = 'none';
+            });
+        });
+
+        // Workshop stat animations
+        document.querySelectorAll('.workshop-stat').forEach(stat => {
+            stat.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-15px) scale(1.05)';
+                this.style.boxShadow = '0 30px 60px rgba(154, 42, 160, 0.2)';
+            });
+            
+            stat.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+                this.style.boxShadow = '0 15px 40px rgba(154, 42, 160, 0.1)';
+            });
+        });
+
+        // Tech card hover effects
+        document.querySelectorAll('.tech-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(20px)';
+                this.style.boxShadow = '0 25px 50px rgba(154, 42, 160, 0.2)';
+                this.style.borderLeftColor = 'var(--secondary)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+                this.style.boxShadow = 'none';
+                this.style.borderLeftColor = 'var(--primary)';
+            });
+        });
+
+        // Workshop details interactions
+        document.querySelectorAll('.workshop-details').forEach(detail => {
+            detail.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(20px)';
+                this.style.boxShadow = '0 25px 50px rgba(154, 42, 160, 0.2)';
+                this.style.borderLeftColor = 'var(--secondary)';
+            });
+            
+            detail.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+                this.style.boxShadow = 'none';
+                this.style.borderLeftColor = 'var(--primary)';
+            });
+        });
+
+        // Impact item effects
+        document.querySelectorAll('.impact-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.1)';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // SDG card effects
+        document.querySelectorAll('.sdg-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-15px) scale(1.05)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Progressive section loading animation
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('.section');
+            const triggerBottom = window.innerHeight / 5 * 4;
+            
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                
+                if (sectionTop < triggerBottom) {
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        // Initialize page animations and effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Stagger section animations
+            setTimeout(() => {
+                document.querySelectorAll('.section').forEach((section, index) => {
+                    setTimeout(() => {
+                        section.style.opacity = '1';
+                        section.style.transform = 'translateY(0)';
+                    }, index * 300);
+                });
+            }, 600);
+
+            // Add floating animation to header logos
+            document.querySelectorAll('.logo').forEach((logo, index) => {
+                logo.style.animationDelay = `${index * 0.5}s`;
+            });
+        });
+
+        // Create dynamic environmental background effects
+        function createEnvironmentalEffects() {
+            const header = document.querySelector('header');
+            for (let i = 0; i < 5; i++) {
+                const element = document.createElement('div');
+                element.style.position = 'absolute';
+                element.style.width = `${60 + Math.random() * 60}px`;
+                element.style.height = `${60 + Math.random() * 60}px`;
+                element.style.background = 'rgba(255, 255, 255, 0.04)';
+                element.style.borderRadius = '50%';
+                element.style.top = Math.random() * 100 + '%';
+                element.style.left = Math.random() * 100 + '%';
+                element.style.animation = `float ${12 + Math.random() * 8}s ease-in-out infinite`;
+                element.style.animationDelay = Math.random() * 8 + 's';
+                header.appendChild(element);
+            }
+        }
+
+        // Initialize environmental background effects
+        createEnvironmentalEffects();
+    </script>
+</body>
+</html>
